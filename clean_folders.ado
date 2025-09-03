@@ -1,6 +1,6 @@
 cap program drop clean_folders
 program define clean_folders 
-    syntax, folder(str) [tempfname(str) outfname(str)]
+    syntax, folder(str) [tempfname(str) outfname(str) NOout]
 
     if "`tempfname'"=="" {
         local tempfname temporary
@@ -20,17 +20,27 @@ program define clean_folders
         di as txt "`temp_msg'"
         cap shell rmdir /S /Q "`folder'/`tempfname'"
         shell mkdir "`folder'/`tempfname'"
-        di as txt "`out_msg'"
-        cap shell rmdir /S /Q "`folder'/`outfname'"
-        shell mkdir "`folder'/`outfname'"
+        if "`noout'"=="" {
+            di as txt "`out_msg'"
+            cap shell rmdir /S /Q "`folder'/`outfname'"
+            shell mkdir "`folder'/`outfname'"
+        }
+        else {
+            di as result "Warning: output folder is not cleaned"
+        }
     }
     else if "`environment'"=="MacOSX" {
         // For macOS/Linux
         di as txt "`temp_msg'"
         cap shell rm -rf "`folder'/`tempfname'"
         shell mkdir -p "`folder'/`tempfname'"
-        di as txt "`out_msg'"
-        cap shell rm -rf "`folder'/`outfname'"
-        shell mkdir -p "`folder'/`outfname'"
+        if "`noout'"=="" {
+            di as txt "`out_msg'"
+            cap shell rm -rf "`folder'/`outfname'"
+            shell mkdir -p "`folder'/`outfname'"
+        }
+        else {
+            di as result "Warning: output folder is not cleaned"
+        }
     }
 end 
