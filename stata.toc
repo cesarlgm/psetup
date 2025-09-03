@@ -1,0 +1,5 @@
+v 1
+d César Garro-Marín, University of Edinburgh (cgarrom@ed.ac.uk)
+d César Garro-Marín, University of Edinburgh (cgarrom@ed.ac.uk)
+p psetup PSETUP - Functions for efficient project handling
+
