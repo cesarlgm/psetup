@@ -40,7 +40,7 @@ program define clean_folders
             shell mkdir -p "`folder'/`outfname'"
         }
         else {
-            di as result "Warning: output folder is not cleaned"
+            di as error "Warning: output folder was left intact"
         }
     }
 end 
