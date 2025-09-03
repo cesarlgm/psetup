@@ -14,6 +14,7 @@ program define clean_folders
 
     local temp_msg="Erasing and creating `folder'/`tempfname'"
     local out_msg="Erasing and creating `folder'/`outfname'"
+    local warn_msg="Warning: output folder was left intact"
 
     if "`environment'"=="Windows" {
         // For Windows
@@ -26,7 +27,7 @@ program define clean_folders
             shell mkdir "`folder'/`outfname'"
         }
         else {
-            di as result "Warning: output folder is not cleaned"
+            di as error "`warn_msg'"
         }
     }
     else if "`environment'"=="MacOSX" {
@@ -40,7 +41,7 @@ program define clean_folders
             shell mkdir -p "`folder'/`outfname'"
         }
         else {
-            di as error "Warning: output folder was left intact"
+            di as error "`warn_msg'"
         }
     }
 end 
