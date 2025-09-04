@@ -1,6 +1,6 @@
 cap program drop clean_folders
 program define clean_folders 
-    syntax, folder(str) [tempfname(str) outfname(str) NOout]
+    syntax, folder(str) [tempfname(str) outfname(str) NOout SUBfolders]
 
     if "`tempfname'"=="" {
         local tempfname temporary
@@ -25,6 +25,13 @@ program define clean_folders
             di as txt "`out_msg'"
             cap shell rmdir /S /Q "`folder'/`outfname'"
             shell mkdir "`folder'/`outfname'"
+
+            if "`subfolders'"!="" {
+                di as txt "Creating subfolders in `folder'/`outfname'"
+                shell mkdir "`folder'/`outfname'/fig"
+                shell mkdir "`folder'/`outfname'/tab"
+                shell mkdir "`folder'/`outfname'/text"
+            }
         }
         else {
             di as error "`warn_msg'"
@@ -39,6 +46,13 @@ program define clean_folders
             di as txt "`out_msg'"
             cap shell rm -rf "`folder'/`outfname'"
             shell mkdir -p "`folder'/`outfname'"
+
+            if "`subfolders'"!="" {
+                di as txt "Creating subfolders in `folder'/`outfname'"
+                shell mkdir -p "`folder'/`outfname'/fig"
+                shell mkdir -p "`folder'/`outfname'/tab"
+                shell mkdir -p "`folder'/`outfname'/text"
+            }
         }
         else {
             di as error "`warn_msg'"
