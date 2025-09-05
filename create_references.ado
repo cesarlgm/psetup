@@ -82,7 +82,7 @@ program define create_pw_ref,
     file open fh using "./temp/links.ps1", write text replace
 
     forvalues file_line=1/`n_references' {
-        get_reference_line, line(`file_line') opath("`opath'")
+        get_reference_line, line(`file_line') opath("`opath'") `copy'
         file write fh `"`r(ref_line)'"' _n
     }
     file close fh
