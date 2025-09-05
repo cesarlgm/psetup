@@ -45,12 +45,15 @@ program define get_reference_line, rclass
     if "`environment'"=="Windows" {
         local cmd1="New-Item -ItemType SymbolicLink -Path"
         local cmd2=" -Target"
+        local cmd3=" -Force"
     }
     else if "`environment'"=="MacOSX" {
-        local cmd1="ln -s"
+        //!This bit might fail
+        local cmd1="ln -sfn"
         local cmd2=""
+        local cmd3=""
     }
-    return local ref_line `"`cmd1' ./input/`ref_dest' `cmd2' '`opath'/`ref_orig''"'
+    return local ref_line `"`cmd1' ./input/`ref_dest' `cmd2' '`opath'/`ref_orig''  `cmd3'"'
 end 
 
 
