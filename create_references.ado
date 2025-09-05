@@ -16,6 +16,7 @@ program define create_references,
     *Creating code creation of references
     create_pw_ref, opath("`opath'") file("`file'")
 
+    execute_references
 end 
 
 
@@ -72,3 +73,23 @@ program define create_pw_ref,
     file close fh
 
 end 
+
+
+cap program drop execute_references
+program define execute_references, 
+    syntax, [tempname(str)]
+
+     if "`tempname'"=="" {
+        local tempname "temp"
+    }
+
+    local environment="`c(os)'"
+
+
+    if "`environment'"=="Windows" {
+        shell powershell -ExecutionPolicy Bypass -File "./`tempname'/links.ps1"
+    }
+    else if "`environment'"=="MacOSX" {
+        shell sh "./`tempname'/links.ps1"
+    }
+end
