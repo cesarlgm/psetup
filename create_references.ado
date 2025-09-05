@@ -11,10 +11,10 @@
 
 cap program drop create_references
 program define create_references,
-    syntax, opath(str) [file(str)]
+    syntax, opath(str) [file(str) COpy]
 
     *Creating code creation of references
-    create_pw_ref, opath("`opath'") file("`file'")
+    create_pw_ref, opath("`opath'") file("`file'") `copy'
 
     execute_references
 end 
@@ -35,7 +35,7 @@ end
 
 cap program drop get_reference_line
 program define get_reference_line, rclass
-    syntax, line(string) opath(str) [copy]
+    syntax, line(string) opath(str) [COpy]
 
     local environment="`c(os)'"
 
@@ -71,7 +71,7 @@ end
 
 cap program drop create_pw_ref
 program define create_pw_ref, 
-    syntax, opath(str) [file(str)]
+    syntax, opath(str) [file(str) COpy]
 
     local environment="`c(os)'"
     
