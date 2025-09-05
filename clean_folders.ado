@@ -29,11 +29,20 @@ program define clean_folders
     cap shell `delete_cmd' "`folder'/`tempfname'"
     shell `mkdir_cmd' "`folder'/`tempfname'"
 
-    if "`subfolders'"!="" {
-        di as txt "Creating subfolders in `folder'/`outfname'"
-        shell `mkdir_cmd' "`folder'/`outfname'/fig"
-        shell `mkdir_cmd' "`folder'/`outfname'/tab"
-        shell `mkdir_cmd' "`folder'/`outfname'/text"
+    if "`noout'"=="" {
+        di as txt "`out_msg'"
+        cap shell `delete_cmd' "`folder'/`outfname'"
+        shell `mkdir_cmd' "`folder'/`outfname'"
+
+        if "`subfolders'"!="" {
+            di as txt "Creating subfolders in `folder'/`outfname'"
+            shell `mkdir_cmd' "`folder'/`outfname'/fig"
+            shell `mkdir_cmd' "`folder'/`outfname'/tab"
+            shell `mkdir_cmd' "`folder'/`outfname'/text"
+        }
+    }
+    else {
+        di as txt "`warn_msg'"
     }
 
     di as result "All forders have been cleaned"
