@@ -35,25 +35,37 @@ end
 
 cap program drop get_reference_line
 program define get_reference_line, rclass
-    syntax, line(string) opath(str)
+    syntax, line(string) opath(str) [copy]
 
     local environment="`c(os)'"
 
     local ref_dest=destination[`line']
     local ref_orig=origin[`line']
 
-    if "`environment'"=="Windows" {
-        local cmd1="New-Item -ItemType SymbolicLink -Path"
-        local cmd2=" -Target"
-        local cmd3=" -Force"
+    if "`copy'"=="" {
+        if "`environment'"=="Windows" {
+            local cmd1="New-Item -ItemType SymbolicLink -Path"
+            local cmd2=" -Target"
+            local cmd3=" -Force"
+        }
+        else if "`environment'"=="MacOSX" {
+            //!This bit might fail
+            local cmd1="ln -sfn"
+            local cmd2=""
+            local cmd3=""
+        }
+        return local ref_line `"`cmd1' ./input/`ref_dest' `cmd2' '`opath'/`ref_orig''  `cmd3'"'
     }
-    else if "`environment'"=="MacOSX" {
-        //!This bit might fail
-        local cmd1="ln -sfn"
-        local cmd2=""
-        local cmd3=""
+    else {
+        if "`environment'"=="Windows" {
+            local cmd1="Copy-Item -Recurse -Force"
+        }
+        else if "`environment'"=="MacOSX" {
+            //!This bit might fail
+            local cmd1="cp -rf"
+        }
+        return local ref_line `"`cmd1' ./input/`ref_dest'  '`opath'/`ref_orig'' "'
     }
-    return local ref_line `"`cmd1' ./input/`ref_dest' `cmd2' '`opath'/`ref_orig''  `cmd3'"'
 end 
 
 
