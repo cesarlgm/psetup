@@ -64,7 +64,7 @@ program define get_reference_line, rclass
             //!This bit might fail
             local cmd1="cp -rf"
         }
-        return local ref_line `"`cmd1' ./input/`ref_dest'  '`opath'/`ref_orig'' "'
+        return local ref_line `"`cmd1'  `opath'/`ref_orig'  ./input/`ref_dest' "'
     }
 end 
 
