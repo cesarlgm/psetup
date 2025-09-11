@@ -11,10 +11,10 @@
 
 cap program drop create_references
 program define create_references,
-    syntax, opath(str) [file(str) COpy]
+    syntax, opath(str) [file(str) ipath(str) COpy]
 
     *Creating code creation of references
-    create_pw_ref, opath("`opath'") file("`file'") `copy'
+    create_pw_ref, opath("`opath'") file("`file'") `copy' ipath(`ipath')
 
     execute_references
 end 
@@ -35,7 +35,11 @@ end
 
 cap program drop get_reference_line
 program define get_reference_line, rclass
-    syntax, line(string) opath(str) [COpy]
+    syntax, line(string) opath(str) [COpy ipath(str)]
+
+    if "`ipath'"=="" {
+        local ipath "./input"
+    }
 
     local environment="`c(os)'"
 
@@ -64,14 +68,14 @@ program define get_reference_line, rclass
             //!This bit might fail
             local cmd1="cp -rf"
         }
-        return local ref_line `"`cmd1'  `opath'/`ref_orig'  ./input/`ref_dest' "'
+        return local ref_line `"`cmd1'  `opath'/`ref_orig'  `ipath'/`ref_dest' "'
     }
 end 
 
 
 cap program drop create_pw_ref
 program define create_pw_ref, 
-    syntax, opath(str) [file(str) COpy]
+    syntax, opath(str) [file(str) COpy ipath(str)]
 
     local environment="`c(os)'"
     
@@ -82,7 +86,7 @@ program define create_pw_ref,
     file open fh using "./temp/links.ps1", write text replace
 
     forvalues file_line=1/`n_references' {
-        get_reference_line, line(`file_line') opath("`opath'") `copy'
+        get_reference_line, line(`file_line') opath("`opath'") `copy' ipath(`ipath')
         file write fh `"`r(ref_line)'"' _n
     }
     file close fh
