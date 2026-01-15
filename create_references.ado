@@ -27,7 +27,9 @@ program define read_reference_file
     if "`file'"=="" {
         local file "input_manifest"
     }
-    import delimited "./`file'.txt", varnames(nonames) stringcols(_all) clear
+    import delimited "./`file'.txt", varnames(nonames) stringcols(_all) delimiter(";") clear
+    drop if substr(v1, 1, 1) == "#"
+    
     rename v1 destination
     rename v2 origin 
 end 
