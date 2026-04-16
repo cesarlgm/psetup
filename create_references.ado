@@ -16,8 +16,10 @@ program define create_references,
     *Creating code creation of references
     create_pw_ref, opath("`opath'") file("`file'") `copy' ipath(`ipath')
 
-    execute_references
-end 
+    execute_references, tempname("`file'")
+
+    write_failed_references, file("`file'") ipath(`ipath')
+end
 
 
 cap program drop read_reference_file
@@ -96,6 +98,40 @@ program define create_pw_ref,
 end 
 
 
+cap program drop write_failed_references
+program define write_failed_references
+    syntax, [file(str) ipath(str)]
+
+    if "`ipath'"=="" {
+        local ipath "./input"
+    }
+
+    read_reference_file, file("`file'")
+    local n = _N
+    local n_failed = 0
+
+    file open fh_fail using "./temp/failed_references.txt", write text replace
+
+    forvalues i = 1/`n' {
+        local dest = destination[`i']
+        local orig = origin[`i']
+        cap confirm file "`ipath'/`dest'"
+        if _rc {
+            file write fh_fail "`dest';`orig'" _n
+            local n_failed = `n_failed' + 1
+        }
+    }
+    file close fh_fail
+
+    if `n_failed' > 0 {
+        di as error "`n_failed' reference(s) not created. See ./temp/failed_references.txt"
+    }
+    else {
+        cap erase "./temp/failed_references.txt"
+    }
+end
+
+
 cap program drop execute_references
 program define execute_references, 
     syntax, [tempname(str)]
@@ -109,6 +145,9 @@ program define execute_references,
 
     if "`environment'"=="Windows" {
         shell powershell -ExecutionPolicy Bypass -File "./`tempname'/links.ps1"
+    }
+    else if "`environment'"=="MacOSX" {
+        shell sh "./`tempname'/links.ps1"
     }
     else if "`environment'"=="MacOSX" {
         shell sh "./`tempname'/links.ps1"
